@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello World! </h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OMR Quiz with Add Questions</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 OMR Quiz Builder</h1>
+
+    <form id="question-form">
+      <h2>➕ Add a New Question</h2>
+      <input type="text" id="new-question" placeholder="Enter question text" required />
+      <input type="text" class="option" placeholder="Option A" required />
+      <input type="text" class="option" placeholder="Option B" required />
+      <input type="text" class="option" placeholder="Option C" required />
+      <input type="text" class="option" placeholder="Option D" required />
+      <button type="submit">Add Question</button>
+    </form>
+
+    <hr/>
+
+    <form id="quiz-form">
+      <h2>📚 Quiz Questions</h2>
+      <div id="question-list"></div>
+      <button type="submit">Submit Answers</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    let questionCounter = 0;
+
+    document.getElementById("question-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const questionText = document.getElementById("new-question").value;
+      const options = document.querySelectorAll(".option");
+
+      const questionHTML = document.createElement("div");
+      questionHTML.className = "question";
+      questionHTML.innerHTML = `<p>${questionCounter + 1}. ${questionText}</p>`;
+
+      const name = `q${questionCounter + 1}`;
+      ['A', 'B', 'C', 'D'].forEach((label, index) => {
+        const optionValue = options[index].value;
+        const input = document.createElement("label");
+        input.innerHTML = `
+          <input type="radio" name="${name}" value="${label}" />
+          ${label}) ${optionValue}
+        `;
+        questionHTML.appendChild(input);
+        questionHTML.appendChild(document.createElement("br"));
+      });
+
+      document.getElementById("question-list").appendChild(questionHTML);
+      questionCounter++;
+
+      // Reset form
+      document.getElementById("new-question").value = "";
+      options.forEach(opt => (opt.value = ""));
+    });
+
+    document.getElementById("quiz-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      let resultHTML = "<h3>Your Answers:</h3><ul>";
+
+      for (let i = 1; i <= questionCounter; i++) {
+        const answer = document.querySelector(`input[name="q${i}"]:checked`)?.value;
+        resultHTML += `<li>Q${i}: ${answer || "Not answered"}</li>`;
+      }
+
+      resultHTML += "</ul>";
+      document.getElementById("result").innerHTML = resultHTML;
+    });
+  </script>
+</body>
+</html>
